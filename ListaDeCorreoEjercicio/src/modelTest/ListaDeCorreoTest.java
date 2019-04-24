@@ -9,7 +9,8 @@ public class ListaDeCorreoTest {
 	@Test
 	public void enviarMensaje_enviaMensajeVacioEnListaAbierta() {
 		ListaDeCorreo lista = new ListaDeCorreo();
-		lista.enviarMensaje("", "", "");
+		Correo miCorreo = new Correo();
+		lista.enviarMensaje(miCorreo);
 	}
 	
 	@Test
@@ -44,7 +45,9 @@ public class ListaDeCorreoTest {
 	public void listaDeCorreo_seEnviaCorreoEnUnaListaAbierta() {
 		ListaDeCorreo lista = new ListaDeCorreo();
 		lista.getCorreos().add("alv@gmail.com.ar");
-		lista.enviarMensaje("gt40@yahoo.com", "memes", "nada");
+		Correo miCorreo = new Correo();
+		miCorreo.set_correo("gt40@yahoo.com");
+		lista.enviarMensaje(miCorreo);
 	}
 	
 	@Test(expected=ExceptionCorreoNoPerteneceAlGrupo.class)
@@ -52,8 +55,9 @@ public class ListaDeCorreoTest {
 		ListaDeCorreo lista = new ListaDeCorreo();
 		lista.getCorreos().add("alv@gmail.com.ar");
 		lista.setCerrada(true);
-		lista.enviarMensaje("gt40@yahoo.com", "memes", "nada");
-		
+		Correo miCorreo = new Correo();
+		miCorreo.set_correo("gt40@yahoo.com");
+		lista.enviarMensaje(miCorreo);
 	}
 	
 	@Test
@@ -62,7 +66,9 @@ public class ListaDeCorreoTest {
 		lista.getCorreos().add("alv@gmail.com.ar");
 		lista.getCorreos().add("gt40@yahoo.com");
 		lista.setCerrada(true);
-		lista.enviarMensaje("gt40@yahoo.com", "memes", "nada");
+		Correo miCorreo = new Correo();
+		miCorreo.set_correo("gt40@yahoo.com");
+		lista.enviarMensaje(miCorreo);
 		
 	}
 	
@@ -94,5 +100,20 @@ public class ListaDeCorreoTest {
 		lista.getCorreos().add("mavelazquez@gmail.com");
 		
 	}
-	
+
+	@Test
+	public void listaDeCorreo_SeEnviaUnMailMasDe6VecesPorLaMismaPersona() {
+		ListaDeCorreo lista = new ListaDeCorreo();
+		lista.setSuscripcionCerrada(false);
+		lista.addFiltros(new FiltroSpam());
+		Correo miCorreo = new Correo();
+		miCorreo.set_correo("mailspammer@spaaaaammmm.com");
+		miCorreo.set_titulo("spam");
+		miCorreo.set_correo("spam2");
+		for(int i = 0; i < 6; i++)
+		{
+			lista.enviarMensaje(miCorreo);
+		}
+		//Assert.assertArrayEquals("El Correo no esta Bloqueado.",true, lista.mailFiltrado(miCorreo));
+	}
 }
